@@ -1,14 +1,34 @@
 #include <stdio.h>
+
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
-// extern "C" wyłącza modyfikację nazwy funkcji przez kompilator C++ (tzw. name mangling).
-// Dzięki temu wewnętrzny kod startowy ESP-IDF (napisany w C) bez problemu znajdzie i uruchomi tę funkcję.
+#include "mpu6050.h"
+#include "step_detector.h"
+
 extern "C" void app_main(void)
 {
-    printf("Uruchamiam system krokomierza z FreeRTOS!\n");
-    
-    while(true) {
-        vTaskDelay(1000 / portTICK_PERIOD_MS);      //usypianie wątku zamiast delay(), bo RTOS
+    printf("Uruchamiam system krokomierza!\n");
+
+    MPU6050 sensor;
+    StepDetector detector;
+
+    sensor.init();
+    //sensor.readWhoAmI();
+    // sensor.readAcceleration();
+    // sensor.readAccelerationG();
+    // sensor.getAccelerationMagnitude();
+
+    while (true)
+    {
+        float magnitude = sensor.getAccelerationMagnitude();
+
+        if (detector.detectStep(magnitude))
+        {
+            printf("KROK! Liczba krokow: %lu\n",
+                   detector.getStepCount());
+        }
+
+        vTaskDelay(200 / portTICK_PERIOD_MS);
     }
 }
