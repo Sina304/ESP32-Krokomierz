@@ -26,8 +26,15 @@ extern "C" void app_main(void)
     ble.init();
 
     // Funkcje testowe używane podczas uruchamiania projektu.
-    // sensor.readWhoAmI();
-    // sensor.readAcceleration();
+    // sensor.readWhoAmI(); - test I2C
+    /* Acceleration accel = sensor.readAcceleration(); - test MPU6050
+
+        printf("X=%d  Y=%d  Z=%d\n",
+            accel.x,
+            accel.y,
+            accel.z
+        );
+    */
     // sensor.readAccelerationG();
     // sensor.getAccelerationMagnitude();
 
